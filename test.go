@@ -2,17 +2,12 @@ package main
 
 import (
 	"fmt"
-	"log"
-
-	"github.com/joho/godotenv"
+	"time"
 )
 
 func main2() {
-	err := godotenv.Load(".env")
+	timeNow := time.Now()
+	timeFormat := timeNow.Format("2006-01-02 15:04:05")
 
-	if err != nil {
-		log.Fatal("Error to loading .env file")
-	}
-
-	fmt.Println()
+	fmt.Println(fmt.Sprintf("%s", timeFormat))
 }

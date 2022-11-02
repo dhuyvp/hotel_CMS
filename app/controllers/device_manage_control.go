@@ -65,11 +65,11 @@ func InsertDeviceData(db *sqlx.DB, DataStruct models.DeviceManage, HotelID int) 
 	queryColumns, queryValues := utils.GetColumnsAndValuesDeviceManage(DataStruct)
 	return func(c *fiber.Ctx) error {
 		var result []models.HotelManage
-		queryHotel := "SELECT * FROM " + tableHotelName + " WHERE HotelID=?"
+		queryHotel := "SELECT * FROM " + tableHotelName + " WHERE HotelID=? LIMIT 1"
 
 		err := db.Select(&result, queryHotel, HotelID)
-		if err != nil {
-			log.Println("Error to SELECT Hotel that want to INSERT device manage data", err)
+		if err != nil || result == nil {
+			log.Println("Error to SELECT Hotel that want to INSERT device manage data otel with HotelID = ", HotelID, err)
 			return c.Status(fiber.StatusBadRequest).JSON(utils.Response{
 				Success:    false,
 				StatusCode: fiber.StatusBadRequest,
@@ -95,8 +95,15 @@ func InsertDeviceData(db *sqlx.DB, DataStruct models.DeviceManage, HotelID int) 
 			})
 		}
 
-		result[0].DevicesNumber += 1
-		UpdateHotelData(db, result[0], HotelID)
+		queryUpdateHotel := "UPDATE " + tableHotelName + " SET DevicesNumber=? WHERE HotelID=?"
+		_, errUpdateHotel := db.Exec(queryUpdateHotel, result[0].DevicesNumber+1, HotelID)
+		if errUpdateHotel != nil {
+			log.Println("Update Hotel data is denied", err)
+			return c.Status(fiber.StatusBadRequest).JSON(utils.Response{
+				Success:    false,
+				StatusCode: fiber.StatusBadRequest,
+			})
+		}
 
 		return c.Status(fiber.StatusOK).JSON(utils.Response{
 			Success:    true,

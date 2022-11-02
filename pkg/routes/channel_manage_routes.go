@@ -13,9 +13,8 @@ func PublicChannelManageRoutes(app *fiber.App, db *sqlx.DB, GroupAPI fiber.Route
 
 	// Data to INSERT
 	ChannelManageInsert := models.ChannelManage{
-		ChannelID:         1,
-		ChannelListID:     1,
-		Logo:              "",
+		ChannelListID:     4,
+		Logo:              "logo",
 		ChannelName:       "123",
 		Link:              "dsa.dsad",
 		DetailDescription: "duoc",
@@ -41,7 +40,7 @@ func PublicChannelManageRoutes(app *fiber.App, db *sqlx.DB, GroupAPI fiber.Route
 	ChannelManageUpdate := models.ChannelManage{
 		ChannelID:         ChannelIdUpdate,
 		ChannelListID:     1,
-		Logo:              "",
+		Logo:              "Logo",
 		ChannelName:       "123",
 		Link:              "dsa.dsad",
 		DetailDescription: "duoc",

@@ -5,6 +5,7 @@ import (
 	"hotel_cms/app/models"
 	"hotel_cms/pkg/utils"
 	"log"
+	"math"
 	"os"
 
 	"github.com/gofiber/fiber/v2"
@@ -55,6 +56,34 @@ func InsertChannelListData(db *sqlx.DB, DataStruct models.ChannelListManage) fib
 			})
 		}
 
+		var result []models.ChannelListManage
+		querySelect := "SELECT SortOrder FROM " + tableName
+		err := db.Select(&result, querySelect)
+
+		if err != nil {
+			log.Println("Error to SELECT before INSERT channel list manage data", err)
+			return c.Status(fiber.StatusBadRequest).JSON(utils.Response{
+				Success:    false,
+				StatusCode: fiber.StatusBadRequest,
+			})
+		}
+
+		for i := 0; i < len(result)-1; i++ {
+			RowValue := result[i]
+			if RowValue.SortOrder >= DataStruct.SortOrder {
+				query := "UPDATE " + tableName + " SET " + "SortOrder=? WHERE ChannelListID=?"
+				_, errUpdate := db.Exec(query, RowValue.SortOrder+1, RowValue.ChannelListID)
+
+				if errUpdate != nil {
+					log.Println("Error to SELECT before INSERT channel list manage data", errUpdate)
+					return c.Status(fiber.StatusBadRequest).JSON(utils.Response{
+						Success:    false,
+						StatusCode: fiber.StatusBadRequest,
+					})
+				}
+			}
+		}
+
 		return c.Status(fiber.StatusOK).JSON(utils.Response{
 			Success:    true,
 			StatusCode: fiber.StatusOK,
@@ -65,8 +94,57 @@ func InsertChannelListData(db *sqlx.DB, DataStruct models.ChannelListManage) fib
 
 func UpdateChannelListData(db *sqlx.DB, DataStruct models.ChannelListManage, UpdateID int) fiber.Handler {
 	tableName := fmt.Sprintf("%s", os.Getenv("CHANNEL_LIST"))
-	queryUpdate := utils.GetQueryUpdateChannelListManage(DataStruct)
 	return func(c *fiber.Ctx) error {
+		queryUpdate := utils.GetQueryUpdateChannelListManage(DataStruct)
+
+		var result []models.ChannelListManage
+		querySelect := "SELECT * FROM " + tableName
+		err := db.Select(&result, querySelect)
+
+		if err != nil {
+			log.Println("Error to SELECT before UPDATE channel list manage data", err)
+			return c.Status(fiber.StatusBadRequest).JSON(utils.Response{
+				Success:    false,
+				StatusCode: fiber.StatusBadRequest,
+			})
+		}
+
+		var resultGet []models.ChannelListManage
+		queryGetSortOrder := "SELECT SortOrder FROM " + tableName + " WHERE ChannelListID=?"
+		errGet := db.Select(&resultGet, queryGetSortOrder, UpdateID)
+		if errGet != nil {
+			log.Println("Error to SELECT before UPDATE channel list manage data", errGet)
+			return c.Status(fiber.StatusBadRequest).JSON(utils.Response{
+				Success:    false,
+				StatusCode: fiber.StatusBadRequest,
+			})
+		}
+
+		LeftOrder := int(math.Min(float64(resultGet[0].SortOrder), float64(DataStruct.SortOrder)))
+		RightOrder := int(math.Max(float64(resultGet[0].SortOrder), float64(DataStruct.SortOrder)))
+
+		count := 1
+		if resultGet[0].SortOrder <= DataStruct.SortOrder {
+			count = -1
+		}
+
+		for i := 0; i < len(result); i++ {
+			RowValue := result[i]
+			if RowValue.SortOrder >= LeftOrder && RowValue.SortOrder <= RightOrder {
+
+				query := "UPDATE " + tableName + " SET " + "SortOrder=? WHERE ChannelListID=?"
+				_, errUpdate := db.Exec(query, RowValue.SortOrder+count, RowValue.ChannelListID)
+
+				if errUpdate != nil {
+					log.Println("Error to SELECT before UPDATE channel list manage data", errUpdate)
+					return c.Status(fiber.StatusBadRequest).JSON(utils.Response{
+						Success:    false,
+						StatusCode: fiber.StatusBadRequest,
+					})
+				}
+			}
+		}
+
 		queryDb := "UPDATE " + tableName + " SET " + queryUpdate + " WHERE ChannelListID=?"
 		_, errUpdate := db.Exec(queryDb, UpdateID)
 

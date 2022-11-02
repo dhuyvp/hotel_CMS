@@ -14,11 +14,21 @@ func GetColumnsAndValuesHotelManage(DataStruct models.HotelManage) (string, stri
 	queryValues := ""
 
 	for i := 0; i < v.NumField(); i++ {
+		ColType := fmt.Sprintf("%s", v.Field(i).Type())
+		ColValue := fmt.Sprintf("%v", v.Field(i).Interface())
+
+		if ColType == "string" && ColValue == "" {
+			continue
+		}
+		if ColType == "int" && ColValue == "0" {
+			continue
+		}
+
 		queryColumns += "," + typeOfStruct.Field(i).Name
-		if fmt.Sprintf("%s", v.Field(i).Type()) != "string" {
-			queryValues += "," + fmt.Sprintf("%v", v.Field(i).Interface())
+		if ColType != "string" {
+			queryValues += "," + ColValue
 		} else {
-			queryValues += ",'" + fmt.Sprintf("%v", v.Field(i).Interface()) + "'"
+			queryValues += ",'" + ColValue + "'"
 		}
 	}
 
@@ -32,11 +42,21 @@ func GetQueryUpdateHotelManage(DataStruct models.HotelManage) string {
 	queryUpdate := ""
 
 	for i := 0; i < v.NumField(); i++ {
+		ColType := fmt.Sprintf("%s", v.Field(i).Type())
+		ColValue := fmt.Sprintf("%v", v.Field(i).Interface())
+
+		if ColType == "string" && ColValue == "" {
+			continue
+		}
+		if ColType == "int" && ColValue == "0" {
+			continue
+		}
+
 		queryUpdate += "," + typeOfStruct.Field(i).Name + "="
-		if fmt.Sprintf("%s", v.Field(i).Type()) != "string" {
-			queryUpdate += fmt.Sprintf("%v", v.Field(i).Interface())
+		if ColType != "string" {
+			queryUpdate += ColValue
 		} else {
-			queryUpdate += "'" + fmt.Sprintf("%v", v.Field(i).Interface()) + "'"
+			queryUpdate += "'" + ColValue + "'"
 		}
 	}
 

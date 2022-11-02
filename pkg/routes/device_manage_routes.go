@@ -12,14 +12,13 @@ func PublicDeviceManageRoutes(app *fiber.App, db *sqlx.DB, GroupAPI fiber.Router
 	route := GroupAPI.Group("/device_manage")
 
 	// Data to INSERT
-	HotelIDInsert := 1
+	HotelIDInsert := 6
 	DeviceManageInsert := models.DeviceManage{
-		DeviceID:          1,
-		HotelID:           1,
-		MacWired:          "",
-		MacWireless:       "",
+		HotelID:           HotelIDInsert,
+		MacWired:          "MacWired",
+		MacWireless:       "MacWireless",
 		DeviceName:        "device",
-		DetailDescription: "",
+		DetailDescription: "detail",
 		IsActive:          true,
 	}
 
@@ -43,11 +42,11 @@ func PublicDeviceManageRoutes(app *fiber.App, db *sqlx.DB, GroupAPI fiber.Router
 	DeviceIdUpdate := 1
 	DeviceManageUpdate := models.DeviceManage{
 		DeviceID:          DeviceIdUpdate,
-		HotelID:           1,
-		MacWired:          "",
-		MacWireless:       "",
+		HotelID:           5,
+		MacWired:          "MacWired",
+		MacWireless:       "MacWireless",
 		DeviceName:        "device",
-		DetailDescription: "",
+		DetailDescription: "detail",
 		IsActive:          true,
 	}
 

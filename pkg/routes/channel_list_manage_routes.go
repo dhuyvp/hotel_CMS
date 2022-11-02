@@ -13,10 +13,9 @@ func PublicChannelListManageRoutes(app *fiber.App, db *sqlx.DB, GroupAPI fiber.R
 
 	// Data to INSERT
 	ChannelListManageInsert := models.ChannelListManage{
-		ChannelListID:     1,
 		ChannelPackID:     2,
-		ChannelListName:   "ABC",
-		DetailDescription: "",
+		ChannelListName:   "ABC1",
+		DetailDescription: "mo_ta12",
 		SortOrder:         1,
 	}
 
@@ -26,14 +25,13 @@ func PublicChannelListManageRoutes(app *fiber.App, db *sqlx.DB, GroupAPI fiber.R
 	ChannelListName = &ValueChannelListName
 
 	// Data to UPDATE
-	HotelID := 1
-	ChannelListIdUpdate := 1
+	ChannelListIdUpdate := 5
 	ChannelListManageUpdate := models.ChannelListManage{
 		ChannelListID:     ChannelListIdUpdate,
 		ChannelPackID:     2,
-		ChannelListName:   "ABC",
-		DetailDescription: "",
-		SortOrder:         1,
+		ChannelListName:   "ABC5",
+		DetailDescription: "mota5",
+		SortOrder:         8,
 	}
 
 	// HotelID to DELETE
@@ -41,7 +39,7 @@ func PublicChannelListManageRoutes(app *fiber.App, db *sqlx.DB, GroupAPI fiber.R
 
 	route.Post("/insert", controllers.InsertChannelListData(db, ChannelListManageInsert))
 	route.Get("/get", controllers.SearchChannelListData(db, ChannelListName))
-	route.Put("/put", controllers.UpdateChannelListData(db, ChannelListManageUpdate, HotelID))
+	route.Put("/put", controllers.UpdateChannelListData(db, ChannelListManageUpdate, ChannelListIdUpdate))
 	route.Delete("/delete", controllers.DeleteChannelListData(db, ChannelListIdDelete))
 
 	route.Get("", func(c *fiber.Ctx) error {

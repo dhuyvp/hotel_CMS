@@ -17,7 +17,7 @@ func PublicChannelPackManageRoutes(app *fiber.App, db *sqlx.DB, GroupAPI fiber.R
 		Logo:              "VTVCab",
 		ChannelPackName:   "VTVCab",
 		DetailDescription: "Tuyet1",
-		Note:              "",
+		Note:              "note",
 		IsActive:          true,
 	}
 
@@ -37,7 +37,7 @@ func PublicChannelPackManageRoutes(app *fiber.App, db *sqlx.DB, GroupAPI fiber.R
 		Logo:              "VTVCab",
 		ChannelPackName:   "VTVCab",
 		DetailDescription: "Tuyetvoi",
-		Note:              "",
+		Note:              "Notesdadas",
 		IsActive:          true,
 	}
 
